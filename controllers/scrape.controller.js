@@ -2,39 +2,54 @@ const fetch = require('isomorphic-fetch')
 const cheerio = require('cheerio')
 
 // base url
-const BASE_URL = 'https://otakudesu.info/'
+const BASE_URL = 'https://otakudesu.live/'
+const header = {
+    method: 'get', // *GET, POST, PUT, DELETE, etc.
+    mode: 'cors', // no-cors, *cors, same-origin
+    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: 'same-origin', // include, *same-origin, omit
+    headers: {
+        //   'Content-Type': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36',
+        'Content-Type': 'application/x-www-form-urlencoded',
+    },
+};
 
 module.exports = {
-    animeList: async(req, res) => {
+    animeList: async (req, res) => {
         // const q = req.query.cat;
         // console.log(q);
-        const resp = await fetch(`${BASE_URL}anime-list`);
-        try{
+        const resp = await fetch(`${BASE_URL}anime-list`, header);
+        try {
             const HOST_NAME = `https://${req.headers.host}`;
 
-            if(resp.status >= 400){res.json({
-                status: resp.status,
-                message: resp.statusText,
-            })}else{
+            if (resp.status >= 400) {
+                res.json({
+                    status: resp.status,
+                    message: resp.statusText,
+                })
+            } else {
                 const text = await resp.text();
                 const $ = cheerio.load(text);
-                console.log($);
+                // console.log($);
                 let jsonData = [];
-                $('#venkonten > div.vezone > div.venser > div.daftarkartun > div#abtext > div.bariskelom > div.penzbar > div.jdlbar').each(function(i, e){
+                $('#venkonten > div.vezone > div.venser > div.daftarkartun > div#abtext > div.bariskelom > div.penzbar > div.jdlbar').each(function (i, e) {
                     const $e = $(e);
-                    // if($e != ""){
                     jsonData.push({});
                     jsonData[i].title = $e.find("div > ul > li > a").text();
                     jsonData[i].linkUrl = $e.find("div > ul > li > a").attr('href');
-                    
+
                 });
+
+                res.setHeader('Content-Type', 'text/html');
+                res.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
                 res.json({
                     data: jsonData
                 })
 
             }
 
-        }catch(e){
+        } catch (e) {
             console.log(e)
             res.status(500).json({
                 message: e
@@ -42,22 +57,24 @@ module.exports = {
 
         }
 
-            // res.json({
-            //     message: "hello world"
-            // })
+        // res.json({
+        //     message: "hello world"
+        // })
     },
     onGoing: async (req, res) => {
         const q = req.query.cat
-        const resp = (q === 'ongoing')? await fetch(`${BASE_URL}ongoing-anime/`) : await fetch(`${BASE_URL}complete-anime/`)
+        const resp = (q === 'ongoing') ? await fetch(`${BASE_URL}ongoing-anime/`) : await fetch(`${BASE_URL}complete-anime/`)
         try {
             const HOST_NAME = `https://${req.headers.host}`
-           
+
             if (q === 'ongoing' || q === 'complete') {
-                
-                if (resp.status >= 400) { res.json({
-                    status: resp.status,
-                    message: resp.statusText
-                })}else {
+
+                if (resp.status >= 400) {
+                    res.json({
+                        status: resp.status,
+                        message: resp.statusText
+                    })
+                } else {
                     const text = await resp.text()
                     const $ = cheerio.load(text)
                     console.log($)
@@ -68,18 +85,21 @@ module.exports = {
                         jsonData[i].imgUrl = $e.find('div > div.thumb > a > div.thumbz > img').attr('src')
                         jsonData[i].title = $e.find('div > div.thumb > a >div.thumbz > h2').text()
                         jsonData[i].slug = $e.find('div > div.thumb > a ').attr('href').replace(/^.*\/\/[^\/]*/, '').replace('/', '')
-                        jsonData[i].linkUrl = `${HOST_NAME}/detail?slug=`+$e.find('div > div.thumb > a ').attr('href').replace(/^.*\/\/[^\/]*/, '').replace('/', '')
+                        jsonData[i].linkUrl = `${HOST_NAME}/detail?slug=` + $e.find('div > div.thumb > a ').attr('href').replace(/^.*\/\/[^\/]*/, '').replace('/', '')
                         jsonData[i].episode = $e.find('div > div.epz').text().trim()
-                        jsonData[i].rating = $e.find('div > div.epztipe').text().trim()
+                        jsonData[i].hari = $e.find('div > div.epztipe').text().trim()
                         jsonData[i].date = $e.find('div > div.newnime').text().trim()
-    
+
                     })
+
+                    res.setHeader('Content-Type', 'text/html');
+                    res.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
                     res.json({
                         category: q,
                         data: jsonData
                     })
                 }
-               
+
             } else {
                 res.json({
                     message: 'Not Found!'
@@ -98,12 +118,12 @@ module.exports = {
             const resp = await fetch(`${BASE_URL}${req.query.slug}`)
             const text = await resp.text()
             const $ = cheerio.load(text)
-            
+
             if (resp.status >= 400) return res.json({
                 status: resp.status,
                 message: resp.statusText
             })
-            
+
             var downloadList = []
             var prevnext = []
             var jsonData = []
@@ -116,7 +136,7 @@ module.exports = {
                 const $e = $(e)
                 jsonData[i].title = $e.find('h1.posttl').text()
                 jsonData[i].streamUrl = $e.find('#pembed > div > iframe').attr('src')
-                 
+
             })
             // PREV NEXT
             $('#venkonten > div.venser > div.venutama > div.prevnext > div.flir > a').each(function (i, e) {
@@ -125,10 +145,10 @@ module.exports = {
 
                 prevnext[i].name = $e.text()
                 prevnext[i].slug = $e.attr('href').replace(/^.*\/\/[^\/]*/, '').replace('/', '')
-                prevnext[i].linkUrl = ($e.text() === 'Next Eps.' || $e.text() === 'Previous Eps.')?`${HOST_NAME}/anime?slug=`+$e.attr('href').replace(/^.*\/\/[^\/]*/, '').replace('/', '')
-                :`${HOST_NAME}/detail?slug=`+$e.attr('href').replace(/^.*\/\/[^\/]*/, '').replace('/', '')
+                prevnext[i].linkUrl = ($e.text() === 'Next Eps.' || $e.text() === 'Previous Eps.') ? `${HOST_NAME}/anime?slug=` + $e.attr('href').replace(/^.*\/\/[^\/]*/, '').replace('/', '')
+                    : `${HOST_NAME}/detail?slug=` + $e.attr('href').replace(/^.*\/\/[^\/]*/, '').replace('/', '')
 
-                 
+
             })
             // download
             $('#venkonten > div.venser > div.venutama > div.download > ul > li').each(function (i, e) {
@@ -141,6 +161,8 @@ module.exports = {
 
             })
 
+            res.setHeader('Content-Type', 'text/html');
+            res.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
             res.json({
 
                 data: jsonData,
@@ -161,7 +183,7 @@ module.exports = {
             const resp = await fetch(`${BASE_URL}${req.query.slug}`)
             const text = await resp.text()
             const $ = cheerio.load(text)
-        
+
             if (resp.status >= 400) return res.json({
                 status: resp.status,
                 message: resp.statusText
@@ -188,8 +210,11 @@ module.exports = {
                 var text = $e.find('span > a').text()
                 listEpisode[i].titleEp = text
                 listEpisode[i].slug = $e.find('span > a').attr('href').replace(/^.*\/\/[^\/]*/, '').replace('/', '')
-                listEpisode[i].linkUrl = `${HOST_NAME}/anime?slug=`+$e.find('span > a').attr('href').replace(/^.*\/\/[^\/]*/, '').replace('/', '')
+                listEpisode[i].linkUrl = `${HOST_NAME}/anime?slug=` + $e.find('span > a').attr('href').replace(/^.*\/\/[^\/]*/, '').replace('/', '')
             })
+
+            res.setHeader('Content-Type', 'text/html');
+            res.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
             res.json({
 
                 data: jsonData,
@@ -203,7 +228,7 @@ module.exports = {
             })
         }
     },
-    searchAnime: async(req,res)=>{
+    searchAnime: async (req, res) => {
         try {
             const HOST_NAME = `https://${req.headers.host}`
             const resp = await fetch(`${BASE_URL}?s=${req.query.q}&post_type=anime`)
@@ -227,13 +252,16 @@ module.exports = {
                 jsonData[i].imgUrl = $e.find('img').attr('src')
                 jsonData[i].title = $e.find('h2 > a').text()
                 jsonData[i].slug = $e.find('h2 > a ').attr('href').replace(/^.*\/\/[^\/]*/, '').replace('/', '')
-                jsonData[i].linkUrl = `${HOST_NAME}/detail?slug=`+$e.find('h2 > a').attr('href').replace(/^.*\/\/[^\/]*/, '').replace('/', '')
-                jsonData[i].genre = $e.find('div:nth-child(3)').text().trim().replace('Genres : ','')
-                jsonData[i].status = $e.find('div:nth-child(4)').text().trim().replace('Status : ','')
-                jsonData[i].rating = $e.find('div:nth-child(5)').text().trim().replace('Rating : ','')
-               
+                jsonData[i].linkUrl = `${HOST_NAME}/detail?slug=` + $e.find('h2 > a').attr('href').replace(/^.*\/\/[^\/]*/, '').replace('/', '')
+                jsonData[i].genre = $e.find('div:nth-child(3)').text().trim().replace('Genres : ', '')
+                jsonData[i].status = $e.find('div:nth-child(4)').text().trim().replace('Status : ', '')
+                jsonData[i].rating = $e.find('div:nth-child(5)').text().trim().replace('Rating : ', '')
+
 
             })
+
+            res.setHeader('Content-Type', 'text/html');
+            res.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
             res.json({
                 data: jsonData,
             })
