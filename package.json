@@ -4,20 +4,19 @@
   "description": "anime api bajakan",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js",
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "rii amri",
   "license": "ISC",
   "dependencies": {
     "cheerio": "^1.0.0-rc.10",
-    "cloudscraper": "^4.6.0",
     "cors": "^2.8.5",
     "express": "^4.17.2",
     "helmet": "^5.0.1",
-    "isomorphic-fetch": "^3.0.0",
-    "puppeteer": "^14.1.0"
+    "isomorphic-fetch": "^3.0.0"
   },
+
   "keywords": [
     "node",
     "heroku",
