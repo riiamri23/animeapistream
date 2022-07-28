@@ -2,7 +2,7 @@ const fetch = require('isomorphic-fetch')
 const cheerio = require('cheerio')
 
 // base url
-const BASE_URL = 'https://otakudesu.tube/'
+const BASE_URL = 'https://otakudesu.watch/'
 
 
 module.exports = {
