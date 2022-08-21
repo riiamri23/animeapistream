@@ -35,8 +35,9 @@ module.exports = {
                     jsonData[i].linkOrigin = $e.find("div.article-inner-wrapper > a").attr('href');
                     jsonData[i].linkUrl = `${HOST_NAME}/animenews/detail?slug=` + $e.find("div.article-inner-wrapper > a").attr('href').replace(/^.*\/\/[^\/]*/, '').replace('/', '');
                     jsonData[i].summary = $e.find("div.article-inner-wrapper > div.meta > div.summary").text().replace(/^\s+|\s+$|\s+(?=\s)/g, "");
+                    jsonData[i].imgUrl = $e.find("div.article-inner-wrapper > div.cover.size-a.has-depth > img").attr('src');
                 });
-
+                // console.log($('body').text());
                 res.setHeader('Content-Type', 'text/html');
                 res.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
                 res.json({
@@ -78,7 +79,7 @@ module.exports = {
 
                     jsonData.categories[i].name = $e.text()
                     jsonData.categories[i].linkOrigin = $e.attr('href')
-                    jsonData.categories[i].linkUrl = `${HOST_NAME}/animenews/category?slug` + $e.attr('href').replace(/^.*\/\/[^\/]*/, '').replace('/', '')
+                    jsonData.categories[i].linkUrl = `${HOST_NAME}/animenews/category?slug=` + $e.attr('href').replace(/^.*\/\/[^\/]*/, '').replace('/', '')
                 });
 
             //artikel
