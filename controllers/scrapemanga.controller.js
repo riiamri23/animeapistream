@@ -25,7 +25,6 @@ module.exports = {
                 let jsonData = [];
                 $('body > main > #wrap > #content > .postbody > .whites > .widget-body > .content > .film-list > .listupd > .animepost').each(function(i, e){
                     const $e = $(e);
-                    console.log($e.find('div > a > div > img').attr('src'))
 
                     jsonData.push({});
                     jsonData[i].title = $e.find('div > .bigor > a > div').text();
@@ -36,8 +35,6 @@ module.exports = {
                     jsonData[i].lastChapter = $e.find('div > .bigor > div > div > a').text();
                     jsonData[i].linkChapter = `${HOST_NAME}/manga/watcher?slug=` + $e.find('div > .bigor > div > div > a').attr('href').replace(/^.*\/\/[^\/]*/, '').replace('/komik/', '').replaceAll('/', '');
                 })
-                // console.log($('body > main > #wrap > #content > .postbody > .whites > .widget-body > .content > .film-list > .listupd > .animepost').html());
-
                 res.setHeader("Content-Type", "text/html");
                 res.setHeader("Cache-Control", "s-max-age=1, stale-while-revalidate");
                 res.json({
