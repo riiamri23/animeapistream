@@ -25,18 +25,16 @@ module.exports = {
                 let jsonData = [];
                 $('body > main > #wrap > #content > .postbody > .whites > .widget-body > .content > .film-list > .listupd > .animepost').each(function(i, e){
                     const $e = $(e);
-                    console.log($e.find('div > a > div > img').attr('src'))
 
                     jsonData.push({});
                     jsonData[i].title = $e.find('div > .bigor > a > div').text();
                     jsonData[i].linkOrigin = $e.find("div > a").attr('href');
                     jsonData[i].linkUrl = `${HOST_NAME}/manga/detail?slug=` + $e.find("div > a").attr('href').replace(/^.*\/\/[^\/]*/, '').replace('/komik/', '').replace('/', '');
+                    jsonData[i].slug = $e.find("div > a").attr('href').replace(/^.*\/\/[^\/]*/, '').replace('/komik/', '').replace('/', '');
                     jsonData[i].imgUrl = $e.find('div > a > div > img').attr('src');
                     jsonData[i].lastChapter = $e.find('div > .bigor > div > div > a').text();
-                    jsonData[i].linkChapter = $e.find('div > .bigor > div > div > a').attr('href');
+                    jsonData[i].linkChapter = `${HOST_NAME}/manga/watcher?slug=` + $e.find('div > .bigor > div > div > a').attr('href').replace(/^.*\/\/[^\/]*/, '').replace('/komik/', '').replaceAll('/', '');
                 })
-                // console.log($('body > main > #wrap > #content > .postbody > .whites > .widget-body > .content > .film-list > .listupd > .animepost').html());
-
                 res.setHeader("Content-Type", "text/html");
                 res.setHeader("Cache-Control", "s-max-age=1, stale-while-revalidate");
                 res.json({
@@ -101,6 +99,7 @@ module.exports = {
                 jsonData.mangaList[i].chapter = $e.find(".lchx > a").text();
                 jsonData.mangaList[i].linkWatch = `${HOST_NAME}/manga/watcher?slug=` + $e.find(".lchx > a").attr('href').replace(/^.*\/\/[^\/]*/, '').replaceAll('/', '');
                 jsonData.mangaList[i].linkDownload = `https://komikindo.id` + $e.find(".dl > a").attr('href');
+                jsonData.mangaList[i].slug = $e.find(".lchx > a").attr('href').replace(/^.*\/\/[^\/]*/, '').replaceAll('/', '');
 
             });
 
