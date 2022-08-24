@@ -11,7 +11,7 @@ module.exports = {
 
         try {
             const HOST_NAME = `http://${req.headers.host}`;
-
+            console.log(res);
             if (resp.status >= 400) {
                 res.json({
                     status: resp.status,
