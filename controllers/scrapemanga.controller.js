@@ -16,7 +16,7 @@ module.exports = {
                 res.json({
                     status: resp.status,
                     message: resp.statusText,
-                    error: 400
+                    error: resp
                 });
             } else {
                 const text = await resp.text();
