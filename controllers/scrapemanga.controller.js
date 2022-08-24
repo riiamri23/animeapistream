@@ -3,7 +3,7 @@ const cheerio = require("cheerio");
 const { json } = require("express/lib/response");
 const { attr } = require("cheerio/lib/api/attributes");
 
-const BASE_URL = "https://komikindo.id/";
+const BASE_URL = "http://komikindo.id/";
 
 module.exports = {
     fetchManga: async (req, res) => {
