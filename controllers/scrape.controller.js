@@ -107,16 +107,13 @@ module.exports = {
 
             if (resp.status >= 400) return res.json({
                 status: resp.status,
-                message: resp.statusText
+                message: resp.statusText,
+                resp: resp
             })
 
             var downloadList = []
             var prevnext = []
             var jsonData = []
-            if (resp.status >= 400) return res.json({
-                status: resp.status,
-                message: 'error'
-            })
             $('#venkonten > div.venser > div.venutama').each(function (i, e) {
                 jsonData.push({})
                 const $e = $(e)
