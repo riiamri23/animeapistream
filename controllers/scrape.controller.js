@@ -80,8 +80,6 @@ module.exports = {
 
                     })
 
-                    res.setHeader('Content-Type', 'text/html');
-                    res.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
                     res.json({
                         category: q,
                         data: jsonData
@@ -146,8 +144,6 @@ module.exports = {
                 downloadList[i].link = $e.find('a').attr('href')
             })
 
-            res.setHeader('Content-Type', 'text/html');
-            res.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
             res.json({
 
                 data: jsonData,
@@ -198,8 +194,6 @@ module.exports = {
                 listEpisode[i].linkUrl = `${HOST_NAME}/anime?slug=` + $e.find('span > a').attr('href').replace(/^.*\/\/[^\/]*/, '').replace('/', '')
             })
 
-            res.setHeader('Content-Type', 'text/html');
-            res.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
             res.json({
 
                 data: jsonData,
@@ -245,8 +239,6 @@ module.exports = {
 
             })
 
-            res.setHeader('Content-Type', 'text/html');
-            res.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
             res.json({
                 data: jsonData,
             })
