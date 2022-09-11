@@ -108,7 +108,7 @@ module.exports = {
             if (resp.status >= 400) return res.json({
                 status: resp.status,
                 message: resp.statusText,
-                resp: resp
+                resp: resp.text
             })
 
             var downloadList = []
